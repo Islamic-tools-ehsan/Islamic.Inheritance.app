@@ -1,5 +1,5 @@
-import { hanafiEngine } from "./hanafi";
+import { shafiiEngine } from "./shafii";
 
 export function ijmaEngine(estate: number, heirs: any) {
-  return hanafiEngine(estate, heirs);
+  return shafiiEngine(estate, heirs);
 }

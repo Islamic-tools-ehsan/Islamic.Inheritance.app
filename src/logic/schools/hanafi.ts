@@ -1,12 +1,13 @@
-
 export function hanafiEngine(estate: number, heirs: any) {
   const res: any[] = [];
   let remaining = estate;
 
   const hasChildren = heirs.son > 0 || heirs.daughter > 0;
   const hasSiblings = heirs.brother > 0 || heirs.sister > 0;
+  const hasGrandfather = heirs.grandfather > 0;
 
-  // WIFE
+  /* ================= SPOUSE ================= */
+
   if (heirs.wife > 0) {
     const share = hasChildren ? estate / 8 : estate / 4;
     res.push({
@@ -18,7 +19,6 @@ export function hanafiEngine(estate: number, heirs: any) {
     remaining -= share;
   }
 
-  // HUSBAND
   if (heirs.husband > 0) {
     const share = hasChildren ? estate / 4 : estate / 2;
     res.push({
@@ -30,7 +30,8 @@ export function hanafiEngine(estate: number, heirs: any) {
     remaining -= share;
   }
 
-  // MOTHER
+  /* ================= MOTHER ================= */
+
   if (heirs.mother > 0) {
     const share =
       hasChildren || hasSiblings
@@ -46,11 +47,11 @@ export function hanafiEngine(estate: number, heirs: any) {
     remaining -= share;
   }
 
-  // FATHER
-  if (heirs.father > 0) {
-    const share = hasChildren ? estate / 6 : 0;
+  /* ================= FATHER ================= */
 
-    if (share > 0) {
+  if (heirs.father > 0) {
+    if (hasChildren) {
+      const share = estate / 6;
       res.push({
         heir: "Father",
         fraction: "1/6",
@@ -60,26 +61,38 @@ export function hanafiEngine(estate: number, heirs: any) {
       remaining -= share;
     }
 
-    // Father takes residue
     if (remaining > 0) {
       res.push({
         heir: "Father",
         fraction: "Residue",
         amount: remaining,
-        reason: "Father as Asabah"
+        reason: "Father as Asabah (blocks siblings)"
       });
       remaining = 0;
     }
 
-    return res; // Father blocks siblings completely
+    return res; // Father blocks siblings & grandfather
   }
 
-  // DAUGHTERS (no sons)
+  /* ================= GRANDFATHER ================= */
+
+  if (hasGrandfather) {
+    res.push({
+      heir: "Grandfather",
+      fraction: "Residue",
+      amount: remaining,
+      reason: "Grandfather treated like father (Hanafi)"
+    });
+    return res; // Blocks siblings
+  }
+
+  /* ================= DAUGHTERS ================= */
+
   if (heirs.daughter > 0 && heirs.son === 0) {
     const share =
       heirs.daughter === 1
         ? estate / 2
-        : estate * 2 / 3;
+        : (estate * 2) / 3;
 
     res.push({
       heir: "Daughter(s)",
@@ -90,7 +103,8 @@ export function hanafiEngine(estate: number, heirs: any) {
     remaining -= share;
   }
 
-  // SONS (asabah)
+  /* ================= SONS ================= */
+
   if (heirs.son > 0) {
     res.push({
       heir: "Son(s)",
@@ -102,8 +116,9 @@ export function hanafiEngine(estate: number, heirs: any) {
     return res;
   }
 
-  // SIBLINGS (only if no father & no sons)
-  if (!hasChildren && heirs.father === 0) {
+  /* ================= SIBLINGS ================= */
+
+  if (!hasChildren) {
     if (heirs.brother > 0 || heirs.sister > 0) {
       res.push({
         heir: "Sibling(s)",
@@ -117,3 +132,4 @@ export function hanafiEngine(estate: number, heirs: any) {
 
   return res;
 }
+

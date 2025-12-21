@@ -6,14 +6,14 @@ import FiqhSelector from "./components/FiqhSelector";
 import { calculateInheritance } from "./logic/inheritanceEngine";
 
 export default function App() {
-  const [estate, setEstate] = useState(1000000);
+  const [estate, setEstate] = useState(1000);
   const [fiqh, setFiqh] = useState("hanafi");
 
   const [heirs, setHeirs] = useState({
     husband: 0,
-    wife: 1,
+    wife: ,
     son: 0,
-    daughter: 1,
+    daughter: 0,
     father: 0,
     mother: 0,
     brother: 0,

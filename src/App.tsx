@@ -11,7 +11,7 @@ export default function App() {
 
   const [heirs, setHeirs] = useState({
     husband: 0,
-    wife: ,
+    wife: 0,
     son: 0,
     daughter: 0,
     father: 0,

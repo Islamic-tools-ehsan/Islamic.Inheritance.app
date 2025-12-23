@@ -1,4 +1,5 @@
 import { exportToPDF } from "../utils/pdfExport";
+import { getExplanation } from "../fiqh/explanations";
 
 export default function ResultTable({ result, estate }: any) {
   return (
